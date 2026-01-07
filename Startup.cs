@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; // For Swagger
+using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 
@@ -26,6 +26,8 @@ namespace AuthAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // 1. Swagger enabled for all environments to help debugging in Docker
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthAPI", Version = "v1" });
@@ -41,7 +43,6 @@ namespace AuthAPI
 
             if (string.IsNullOrEmpty(secretKey))
             {
-                // Fallback or throw, user had logic for throw
                 throw new InvalidOperationException("JWT Secret Key not configured");
             }
 
@@ -71,35 +72,44 @@ namespace AuthAPI
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
 
-            // Configure CORS
+            // 2. Updated CORS Policy to include your Jenkins IP and Port
             services.AddCors(options =>
-         {
-                 options.AddPolicy("AllowAngularApp",
-                 policy =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
                 {
-                  policy.WithOrigins("http://localhost:4200", 
-                               "http://192.168.200.141:4200") // Add your Jenkins IP here
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-                  });
+                    policy.WithOrigins(
+                            "http://localhost:4200",           // Local dev
+                            "http://192.168.200.141:4200",    // Remote Jenkins Access
+                            "http://192.168.200.141:8000"     // Port 8000 Access
+                          )
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
             });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // 3. Move Swagger out of IsDevelopment so it works in the Jenkins Docker Container
+            app.UseSwagger();
+            app.UseSwaggerUI(c => 
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthAPI v1");
+                c.RoutePrefix = "swagger"; // Access via http://IP:8000/swagger
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthAPI v1"));
             }
-            else
-            {
-                app.UseHttpsRedirection();
-            }
+            
+            // 4. CRITICAL: Removed UseHttpsRedirection() 
+            // This was likely causing the "Provisional headers" error in your browser.
 
             app.UseRouting();
+
+            // 5. CRITICAL: UseCors MUST be after UseRouting and before UseAuthentication
             app.UseCors("AllowAngularApp");
 
             app.UseAuthentication();
