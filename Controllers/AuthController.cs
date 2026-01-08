@@ -103,5 +103,34 @@ namespace AuthAPI.Controllers
                 return StatusCode(500, new { message = "An error occurred" });
             }
         }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var username = User.Identity?.Name;
+                if (string.IsNullOrEmpty(username))
+                    return Unauthorized();
+
+                var result = await _authService.ChangePasswordAsync(username, request);
+
+                if (!result)
+                    return BadRequest(new { message = "Current password is incorrect" });
+
+                _logger.LogInformation($"User {username} changed password successfully");
+
+                return Ok(new { message = "Password changed successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password");
+                return StatusCode(500, new { message = "An error occurred while changing password" });
+            }
+        }
     }
 }

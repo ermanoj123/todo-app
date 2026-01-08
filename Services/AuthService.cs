@@ -81,6 +81,25 @@ namespace AuthAPI.Services
                 .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
         }
 
+        public async Task<bool> ChangePasswordAsync(string username, ChangePasswordRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+
+            if (user == null)
+                return false;
+
+            // Verify current password
+            if (!VerifyPassword(request.CurrentPassword, user.PasswordHash))
+                return false;
+
+            // Update password
+            user.PasswordHash = HashPassword(request.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         private string HashPassword(string password)
         {
             using var sha256 = SHA256.Create();
