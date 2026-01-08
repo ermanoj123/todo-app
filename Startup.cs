@@ -79,7 +79,7 @@ namespace AuthAPI
                  policy =>
                 {
                  policy.WithOrigins("http://localhost:4200", 
-                               "http://192.168.200.141:4200") // Add your Jenkins IP here
+                               "http://192.168.1.68:4200") // Add your Jenkins IP here
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
