@@ -10,5 +10,6 @@ namespace AuthAPI.Services
         Task<User> RegisterAsync(RegisterRequest request);
         Task<User> GetUserByUsernameAsync(string username);
         Task<bool> ChangePasswordAsync(string username, ChangePasswordRequest request);
+        Task<User> UpdateProfileAsync(string username, UpdateProfileRequest request);
     }
 }

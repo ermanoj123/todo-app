@@ -132,5 +132,43 @@ namespace AuthAPI.Controllers
                 return StatusCode(500, new { message = "An error occurred while changing password" });
             }
         }
+
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var username = User.Identity?.Name;
+                if (string.IsNullOrEmpty(username))
+                    return Unauthorized();
+
+                var updatedUser = await _authService.UpdateProfileAsync(username, request);
+
+                if (updatedUser == null)
+                    return BadRequest(new { message = "Email already exists or user not found" });
+
+                _logger.LogInformation($"User {username} updated profile successfully");
+
+                return Ok(new
+                {
+                    updatedUser.Id,
+                    updatedUser.Username,
+                    updatedUser.Email,
+                    updatedUser.FirstName,
+                    updatedUser.LastName,
+                    updatedUser.CreatedAt,
+                    updatedUser.LastLoginAt
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating profile");
+                return StatusCode(500, new { message = "An error occurred while updating profile" });
+            }
+        }
     }
 }

@@ -56,7 +56,6 @@ C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\AuthAPI_New.dll
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\ref\AuthAPI_New.dll
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\AuthAPI_New.pdb
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\AuthAPI.genruntimeconfig.cache
-C:\cache_project\Backend\AuthAPI\bin\Debug\net5.0\AuthAPI_New.StaticWebAssets.xml
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\AuthAPI.sourcelink.json
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\staticwebassets\AuthAPI_New.StaticWebAssets.Pack.cache
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\staticwebassets\msbuild.AuthAPI_New.Microsoft.AspNetCore.StaticWebAssets.props

@@ -93,11 +93,40 @@ namespace AuthAPI.Services
             if (!VerifyPassword(request.CurrentPassword, user.PasswordHash))
                 return false;
 
+
             // Update password
             user.PasswordHash = HashPassword(request.NewPassword);
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<User> UpdateProfileAsync(string username, UpdateProfileRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+
+            if (user == null)
+                return null;
+
+            // Check if email is being changed and if it's already taken by another user
+            if (user.Email != request.Email)
+            {
+                var emailExists = await _context.Users
+                    .AnyAsync(u => u.Email == request.Email && u.Username != username);
+
+                if (emailExists)
+                    return null;
+            }
+
+            // Update user profile
+            user.Email = request.Email;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+
+            await _context.SaveChangesAsync();
+
+            return user;
         }
 
         private string HashPassword(string password)
