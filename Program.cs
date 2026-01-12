@@ -23,7 +23,7 @@ namespace AuthAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:8000", "https://0.0.0.0:8001");
+                    webBuilder.UseUrls("http://0.0.0.0:8000", "http://0.0.0.0:8001");
                 });
     }
 }
