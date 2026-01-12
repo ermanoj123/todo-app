@@ -81,7 +81,8 @@ namespace AuthAPI.Controllers
                     }
 
                     // Create uploads directory if it doesn't exist
-                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "profiles");
+                    var webRootPath = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
+                    var uploadsFolder = Path.Combine(webRootPath, "uploads", "profiles");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);

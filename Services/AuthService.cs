@@ -14,14 +14,16 @@ namespace AuthAPI.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(ApplicationDbContext context, ITokenService tokenService)
+        public AuthService(ApplicationDbContext context, ITokenService tokenService, IConfiguration configuration)
         {
             _context = context;
             _tokenService = tokenService;
+            _configuration = configuration;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == request.Username && u.IsActive);
@@ -37,11 +39,8 @@ namespace AuthAPI.Services
             await _context.SaveChangesAsync();
 
             var token = _tokenService.GenerateToken(user);
-            var jwtSettings = _tokenService.GetType().GetField("_configuration",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                ?.GetValue(_tokenService) as IConfiguration;
-
-            var expiryMinutes = int.Parse(jwtSettings?.GetSection("JwtSettings")["ExpiryMinutes"] ?? "60");
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var expiryMinutes = int.Parse(jwtSettings["ExpiryMinutes"] ?? "60");
 
             return new LoginResponse
             {
@@ -52,7 +51,7 @@ namespace AuthAPI.Services
             };
         }
 
-        public async Task<User> RegisterAsync(RegisterRequest request, string? profileImageUrl = null)
+        public async Task<User?> RegisterAsync(RegisterRequest request, string? profileImageUrl = null)
         {
             // Check if username or email already exists
             if (await _context.Users.AnyAsync(u => u.Username == request.Username || u.Email == request.Email))
@@ -76,7 +75,7 @@ namespace AuthAPI.Services
             return user;
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
@@ -102,7 +101,7 @@ namespace AuthAPI.Services
             return true;
         }
 
-        public async Task<User> UpdateProfileAsync(string username, UpdateProfileRequest request)
+        public async Task<User?> UpdateProfileAsync(string username, UpdateProfileRequest request)
         {
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
