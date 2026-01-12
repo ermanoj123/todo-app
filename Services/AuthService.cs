@@ -52,7 +52,7 @@ namespace AuthAPI.Services
             };
         }
 
-        public async Task<User> RegisterAsync(RegisterRequest request)
+        public async Task<User> RegisterAsync(RegisterRequest request, string? profileImageUrl = null)
         {
             // Check if username or email already exists
             if (await _context.Users.AnyAsync(u => u.Username == request.Username || u.Email == request.Email))
@@ -65,6 +65,7 @@ namespace AuthAPI.Services
                 PasswordHash = HashPassword(request.Password),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
+                ProfileImageUrl = profileImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             };

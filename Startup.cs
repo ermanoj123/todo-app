@@ -79,7 +79,7 @@ namespace AuthAPI
              policy =>
             {
                 policy.WithOrigins("http://localhost:4200",
-                      "http://192.168.1.68:4200")
+                      "http://192.168.200.102:4200")
                      .AllowAnyHeader()
                      .AllowAnyMethod()
                      .AllowCredentials();
@@ -99,6 +99,8 @@ namespace AuthAPI
             {
                 app.UseHttpsRedirection();
             }
+
+            app.UseStaticFiles(); // Enable serving static files from wwwroot
 
             app.UseRouting();
             app.UseCors("AllowAngularApp");

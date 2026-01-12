@@ -26,6 +26,9 @@ namespace AuthAPI.Models
         [StringLength(50)]
         public string? LastName { get; set; }
 
+        [StringLength(500)]
+        public string? ProfileImageUrl { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? LastLoginAt { get; set; }
