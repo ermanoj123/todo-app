@@ -64,3 +64,4 @@ C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\staticwebassets\msbuild.buildM
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\staticwebassets\msbuild.buildTransitive.AuthAPI_New.props
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\AuthAPI.csproj.Up2Date
 C:\cache_project\Backend\AuthAPI\obj\Debug\net5.0\refint\AuthAPI_New.dll
+C:\cache_project\Backend\AuthAPI\bin\Debug\net5.0\appsettings.Migration.json

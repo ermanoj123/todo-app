@@ -18,6 +18,6 @@ RUN dotnet publish "AuthAPI.csproj" -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV ASPNETCORE_URLS=http://+:80
-EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:8000
+EXPOSE 8000
 ENTRYPOINT ["dotnet", "AuthAPI_New.dll"]
