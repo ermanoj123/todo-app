@@ -48,7 +48,7 @@ namespace AuthAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during login");
-                return StatusCode(500, new { message = "An error occurred during login" });
+                return StatusCode(500, new { message = "An error occurred during login", error = ex.Message, stackTrace = ex.StackTrace });
             }
         }
 
@@ -114,7 +114,7 @@ namespace AuthAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during registration");
-                return StatusCode(500, new { message = "An error occurred during registration" });
+                return StatusCode(500, new { message = "An error occurred during registration", error = ex.Message, stackTrace = ex.StackTrace });
             }
         }
 

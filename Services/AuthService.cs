@@ -40,7 +40,8 @@ namespace AuthAPI.Services
 
             var token = _tokenService.GenerateToken(user);
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var expiryMinutes = int.Parse(jwtSettings["ExpiryMinutes"] ?? "60");
+            var expiryStr = jwtSettings["ExpiryMinutes"];
+            var expiryMinutes = string.IsNullOrEmpty(expiryStr) ? 60 : int.Parse(expiryStr);
 
             return new LoginResponse
             {
