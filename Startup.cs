@@ -79,7 +79,7 @@ namespace AuthAPI
              policy =>
             {
                 policy.WithOrigins("http://localhost:4200",
-                      "http://192.168.200.101:4200")
+                      "http://192.168.200.124:4200")
                      .AllowAnyHeader()
                      .AllowAnyMethod()
                      .AllowCredentials();
